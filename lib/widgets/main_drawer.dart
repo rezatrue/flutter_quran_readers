@@ -5,7 +5,6 @@ class MainDrawer extends StatefulWidget {
   _MainDrawerState createState() => _MainDrawerState();
 }
 
-
 enum TransType { InLine , AsAWhole }
 
 class _MainDrawerState extends State<MainDrawer> {
