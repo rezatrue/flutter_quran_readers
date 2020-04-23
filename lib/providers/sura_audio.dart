@@ -1,7 +1,6 @@
+import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-
 
 class Sura {
   int number;
@@ -34,17 +33,17 @@ Future<void> getAudio() async{
       var jsonResponse = convert.jsonDecode(response.body);
       if(jsonResponse['code'] == 200 && jsonResponse['status'] == 'OK'){
 
-
         int ayahNumber = jsonResponse['data']['ayahs'].length;
         List<AudioAyah> _ayahs = new List<AudioAyah>();
           for(int i = 0; i < ayahNumber; i++){
            _ayahs.add(AudioAyah(text : jsonResponse['data']['ayahs'][i]['text'], audio: jsonResponse['data']['ayahs'][i]['audio']));
           }
+           // jsonResponse['data']['ayahs'].map((ayah) => _ayahs.add(AudioAyah(text : ayah['text'],audio: ayah['audio'])));
+
           _sura = Sura(number:jsonResponse['data']['number'],name: jsonResponse['data']['name'],englishName: jsonResponse['data']['englishName'],
                     numberOfAyahs: jsonResponse['data']['numberOfAyahs'], ayahs: _ayahs );
           notifyListeners();
-           // List<AudioAyah> ayahs = jsonResponse['data']['ayahs'].map(() => {
-        // }).toList();
+         
       }else{
           print('-------------error------------------');
       }

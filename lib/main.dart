@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import './providers/sura_audio.dart';
 import './screens/my_home_page.dart';
 import 'package:provider/provider.dart';
+import './providers/sura_translation.dart';
+import './providers/quran.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,8 +15,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(
-          value: SuraAudio(),
-        ),
+          value: Quran(),),
+          ChangeNotifierProvider.value(
+          value: SuraAudio(),),
+          ChangeNotifierProvider.value(
+          value: SuraTranslation(),),
         ],
         child: MaterialApp(
           title: '$appName readers',
