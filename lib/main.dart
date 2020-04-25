@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import './providers/sura_audio.dart';
 import './screens/my_home_page.dart';
 import 'package:provider/provider.dart';
-import './providers/sura_translation.dart';
-import './providers/quran.dart';
-
+import './screens/surah_info_list_screens.dart';
+import './providers/surah_info_list.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -15,11 +13,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider.value(
-          value: Quran(),),
-          ChangeNotifierProvider.value(
-          value: SuraAudio(),),
-          ChangeNotifierProvider.value(
-          value: SuraTranslation(),),
+            value: SurahInfoList()),
         ],
         child: MaterialApp(
           title: '$appName readers',
@@ -27,8 +21,14 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             primaryColor: Colors.blueGrey,
           ),
-          home: MyHomePage(title: appName),
+          //home: MyHomePage(title: appName),
+          initialRoute: SurahInfoListScreen.routeName,
+          routes: {
+            '/': (ctx) => MyHomePage(title: appName),
+            SurahInfoListScreen.routeName : (ctx) => SurahInfoListScreen(title: appName,),
+          },
         ),
+        
     );
   }
 }
