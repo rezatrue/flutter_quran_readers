@@ -14,7 +14,8 @@ class SurahInfoListScreen extends StatelessWidget {
  @override
   Widget build(BuildContext context) {
     var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
-    surahInfoList.getApiSurahInfo().then((_){   
+    surahInfoList.getSurahInfo().then((_){   
+      print('data retrived');
     });
      
     return Scaffold(
@@ -35,7 +36,7 @@ class SurahInfoListScreen extends StatelessWidget {
           padding: EdgeInsets.all(2),
           child: ListView(
             children: <Widget>[
-              surahInfoList.surahsInfo == null 
+              surahInfoList.surahsInfo.length < 114 
                 ? Center(child: CircularProgressIndicator(),)  
                 : Column(  
                     children: 
