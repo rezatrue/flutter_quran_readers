@@ -3,32 +3,24 @@ import '../widgets/main_drawer.dart';
 import 'package:provider/provider.dart';
 import '../providers/surah_info_list.dart';
 
-class SurahInfoListScreen extends StatefulWidget {
+class SurahInfoListScreen extends StatelessWidget {
   SurahInfoListScreen({Key key, this.title}) : super(key: key);
   final String title;
 
   static const String routeName = '/surah-info-list-screen';
 
-  @override
-  _SurahInfoListScreenState createState() => _SurahInfoListScreenState();
-}
-
-class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
  @override
   Widget build(BuildContext context) {
     var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
-
-    surahInfoList.getApiSurahInfo().then((_){
-      setState(() {         
-      });
+    surahInfoList.getApiSurahInfo().then((_){   
     });
-    
+     
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(title),
         leading: IconButton(
           icon: Icon(Icons.menu), 
           onPressed: () {
@@ -48,7 +40,6 @@ class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
                 : Column(  
                     children: 
                       surahInfoList.surahsInfo.map((surahInfo) {
-                        //print(surahInfo.englishName);
                         return Container(
                           margin: EdgeInsets.all(2),
                           color: Colors.black54,
