@@ -1,17 +1,40 @@
 import 'package:flutter/material.dart';
 
 class MainDrawer extends StatefulWidget {
+  // final int serialNumber;
+  // MainDrawer({this.serialNumber});  
+
   @override
   _MainDrawerState createState() => _MainDrawerState();
 }
 
 enum TransType { InLine , AsAWhole }
 
+  
+
 class _MainDrawerState extends State<MainDrawer> {
   final _formKey = GlobalKey<FormState>();
   bool _isTranstation = false;
   TransType _translationDecoration = TransType.InLine;
   bool _isRepeat = false;
+
+  List<String> _listOfSurahs = ['Fatiha', 'Bakara', 'Al-Imran', 'An-Nissa', 'Al-Maaida', 'Al-Anaam'];
+  String _selectedSurah = 'Fatiha';
+  List<int> _listOfSurahsno = [1,2,3,4,5,255];
+  int _selectedSurahno = 1;
+
+  void selectSurah({name, number}){
+    setState(() {
+      if(name != null){
+        _selectedSurah = name;
+      _selectedSurahno = _listOfSurahs.indexOf(name)+1;
+      }
+      if(number != null){
+        _selectedSurahno = number;
+        _selectedSurah = _listOfSurahs[_listOfSurahsno.indexOf(number)];
+      }
+    });
+  }
 
   void _switchRepeat(bool value){
     setState(() {
@@ -39,7 +62,8 @@ class _MainDrawerState extends State<MainDrawer> {
             Expanded(
               flex: 1,
               child: Container(
-                  width: MediaQuery.of(context).size.width * 0.85,
+                  //width: MediaQuery.of(context).size.width * 0.85,
+                  width: double.infinity,
                   child: DrawerHeader(
                   child: Text('The Holy Al-Quran', style: TextStyle(color: Colors.white), textAlign: TextAlign.center,),
                   decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/quran_image_400x400.jpg'), fit: BoxFit.cover),
@@ -55,56 +79,41 @@ class _MainDrawerState extends State<MainDrawer> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     children: <Widget>[
                       Row(children: <Widget>[
-                        Text('Start:'),
+                        Text('SURAH:', style: TextStyle(fontWeight: FontWeight.bold),),
                         Expanded(
-                          child: TextFormField(
-                          // The validator receives the text that the user has entered.
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter name';
-                            }
-                            return null;
-                          },
-                          ),
-                        ),
-                        Text('Ayah:'),
-                        Expanded(
-                          child: TextFormField(
-                          // The validator receives the text that the user has entered.
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter name';
-                            }
-                            return null;
-                          },
-                          ),
-                        ),
-                      ],),
-                      Row(children: <Widget>[
-                        Text('Ends:'),
-                        Expanded(
-                          child: TextFormField(
-                          // The validator receives the text that the user has entered.
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter name';
-                            }
-                            return null;
+                          child: DropdownButton<String>(
+                          value: _selectedSurah,
+                          icon: Icon(Icons.arrow_downward),
+                          iconSize: 24,
+                          elevation: 16,
+                          items: _listOfSurahs.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),  
+                          onChanged: (name) {
+                              selectSurah(name: name);
                           },
                         ),
                         ),
-                        Text('Ayah:'),
-                        Expanded(
-                          child: TextFormField(
-                          // The validator receives the text that the user has entered.
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter name';
-                            }
-                            return null;
+                        Text('NUMBER:', style: TextStyle(fontWeight: FontWeight.bold),),
+                        DropdownButton<int>( 
+                          value: _selectedSurahno,
+                          icon: Icon(Icons.arrow_downward),
+                          iconSize: 24,
+                          elevation: 16,
+                          items: _listOfSurahsno.map<DropdownMenuItem<int>>((int value) {
+                            return DropdownMenuItem<int>(
+                              value: value,
+                              child: Text(value.toString()),
+                            );
+                          }).toList(),  
+                          onChanged: (number) {
+                            selectSurah(number: number);
                           },
-                          ),
                         ),
+                        
                       ],),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

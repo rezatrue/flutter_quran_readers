@@ -17,7 +17,12 @@ class SurahInfoListScreen extends StatelessWidget {
     surahInfoList.getSurahInfo().then((_){   
       print('data retrived');
     });
-     
+    int _selectedNumberOfSurah = 0;
+    void openDrawer(int surahNumber){
+      _selectedNumberOfSurah = surahNumber;
+      _scaffoldKey.currentState.openDrawer();
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -47,7 +52,9 @@ class SurahInfoListScreen extends StatelessWidget {
                           child: ListTile(
                             title: Text(surahInfo.number.toString() + ': ' + surahInfo.name),
                             subtitle: Text(surahInfo.englishName + '('+ surahInfo.englishNameTranslation + ') - ' + surahInfo.revelationType),
-                            onTap: () => print(surahInfo.name),
+                            onTap: () {
+                              print(surahInfo.name); 
+                              openDrawer(surahInfo.number);},
                           ),
                         ); } 
                       ).toList(),     
