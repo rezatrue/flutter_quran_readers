@@ -8,32 +8,48 @@ class DBHelper {
   static String listOfSurahSql = 
     'CREATE TABLE '+ TABLE_SURAH_INFO +'(id TEXT PRIMARY KEY, number INTEGER, name TEXT, englishName TEXT, englishNameTranslation TEXT, numberOfAyahs INTEGER, revelationType TEXT)';
 
-  static Future<Database> database() async{
+  static const String  TABLE_FORMAT_INFO = 'list_format';
+  static String listOfFormatSql = 
+    'CREATE TABLE '+ TABLE_FORMAT_INFO +'(id TEXT PRIMARY KEY, identifier TEXT, language TEXT, name TEXT, englishName TEXT, format TEXT, type TEXT, direction TEXT)';
+
+
+  static Future<Database> database(String table) async{
+    String sqlQuery;
+
+    if(table == DBHelper.TABLE_SURAH_INFO){
+      sqlQuery = listOfSurahSql;
+    }
+    if(table == DBHelper.TABLE_FORMAT_INFO){
+      sqlQuery = listOfFormatSql;
+    }
 
    final dbPath = await sql.getDatabasesPath();
+
     return sql.openDatabase(
       path.join(dbPath, 'quran.db'),
       onCreate: (db, version){
-        return db.execute(listOfSurahSql);
+        return db.execute(sqlQuery);
       }, 
       version: 1 
       );
+
   }
 
   static Future<void> clearTable(String table) async{
     print("deleting");
-    final db = await DBHelper.database();
+    final db = await DBHelper.database(table);
       db.delete(table);
   }
+ 
   static Future<void> insert(String table, Map<String, Object>data) async {
     print("inserting");
-    final db = await DBHelper.database();
+    final db = await DBHelper.database(table);
     db.insert(table, data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {
     print('getData db data');
-    final db = await DBHelper.database();
+    final db = await DBHelper.database(table);
     return db.query(table);
   }
 

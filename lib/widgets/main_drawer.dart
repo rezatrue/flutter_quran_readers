@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import '../providers/format_info_list.dart';
+
 
 class MainDrawer extends StatefulWidget {
-  // final int serialNumber;
-  // MainDrawer({this.serialNumber});  
+
+  MainDrawer({Key key, this.serialNumber}) : super(key: key);  
+  final int serialNumber;
 
   @override
   _MainDrawerState createState() => _MainDrawerState();
 }
 
 enum TransType { InLine , AsAWhole }
-
   
-
 class _MainDrawerState extends State<MainDrawer> {
   final _formKey = GlobalKey<FormState>();
   bool _isTranstation = false;
@@ -22,6 +23,14 @@ class _MainDrawerState extends State<MainDrawer> {
   String _selectedSurah = 'Fatiha';
   List<int> _listOfSurahsno = [1,2,3,4,5,255];
   int _selectedSurahno = 1;
+
+  @override
+  void initState() {
+    int num = widget.serialNumber; 
+    if(num != 0) _selectedSurahno = num;
+    print('initState ${num.toString()}');
+    super.initState();
+  }
 
   void selectSurah({name, number}){
     setState(() {
@@ -54,8 +63,10 @@ class _MainDrawerState extends State<MainDrawer> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
+    print('build ${_selectedSurahno.toString()}');
     return Drawer(
         child: Column(
           children: <Widget>[

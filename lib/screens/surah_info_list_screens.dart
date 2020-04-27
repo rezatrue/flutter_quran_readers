@@ -17,9 +17,12 @@ class SurahInfoListScreen extends StatelessWidget {
     surahInfoList.getSurahInfo().then((_){   
       print('data retrived');
     });
-    int _selectedNumberOfSurah = 0;
-    void openDrawer(int surahNumber){
+
+    int _selectedNumberOfSurah = 5;
+    void openDrawerWithNumber(int surahNumber){
+      print('openDrawer $surahNumber');
       _selectedNumberOfSurah = surahNumber;
+      print('openDrawer $_selectedNumberOfSurah');
       _scaffoldKey.currentState.openDrawer();
     }
 
@@ -34,7 +37,7 @@ class SurahInfoListScreen extends StatelessWidget {
           },
         ),
       ),
-      drawer: MainDrawer(),
+      drawer: MainDrawer(serialNumber: _selectedNumberOfSurah),
       body: Consumer<SurahInfoList>(
         builder: (ctx, surahInfoList, ch)
         => Container(
@@ -53,8 +56,9 @@ class SurahInfoListScreen extends StatelessWidget {
                             title: Text(surahInfo.number.toString() + ': ' + surahInfo.name),
                             subtitle: Text(surahInfo.englishName + '('+ surahInfo.englishNameTranslation + ') - ' + surahInfo.revelationType),
                             onTap: () {
-                              print(surahInfo.name); 
-                              openDrawer(surahInfo.number);},
+                              print('${surahInfo.name} ${surahInfo.number}'); 
+                              openDrawerWithNumber(surahInfo.number);
+                              },
                           ),
                         ); } 
                       ).toList(),     
