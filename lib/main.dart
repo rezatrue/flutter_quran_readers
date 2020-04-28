@@ -3,6 +3,7 @@ import './screens/my_home_page.dart';
 import 'package:provider/provider.dart';
 import './screens/surah_info_list_screens.dart';
 import './providers/surah_info_list.dart';
+import './providers/format_info_list.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -14,6 +15,8 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider.value(
             value: SurahInfoList()),
+          ChangeNotifierProvider.value(
+            value: FormatInfoList()),
         ],
         child: MaterialApp(
           title: '$appName readers',

@@ -13,22 +13,17 @@ class DBHelper {
     'CREATE TABLE '+ TABLE_FORMAT_INFO +'(id TEXT PRIMARY KEY, identifier TEXT, language TEXT, name TEXT, englishName TEXT, format TEXT, type TEXT, direction TEXT)';
 
 
-  static Future<Database> database(String table) async{
-    String sqlQuery;
-
-    if(table == DBHelper.TABLE_SURAH_INFO){
-      sqlQuery = listOfSurahSql;
-    }
-    if(table == DBHelper.TABLE_FORMAT_INFO){
-      sqlQuery = listOfFormatSql;
-    }
-
+  static Future<Database> database() async{
+ 
    final dbPath = await sql.getDatabasesPath();
 
     return sql.openDatabase(
       path.join(dbPath, 'quran.db'),
       onCreate: (db, version){
-        return db.execute(sqlQuery);
+         return db.execute(listOfSurahSql).then((_){
+            return db.execute(listOfFormatSql);
+         });
+         
       }, 
       version: 1 
       );
@@ -37,19 +32,19 @@ class DBHelper {
 
   static Future<void> clearTable(String table) async{
     print("deleting");
-    final db = await DBHelper.database(table);
+    final db = await DBHelper.database();
       db.delete(table);
   }
  
   static Future<void> insert(String table, Map<String, Object>data) async {
     print("inserting");
-    final db = await DBHelper.database(table);
+    final db = await DBHelper.database();
     db.insert(table, data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {
     print('getData db data');
-    final db = await DBHelper.database(table);
+    final db = await DBHelper.database();
     return db.query(table);
   }
 

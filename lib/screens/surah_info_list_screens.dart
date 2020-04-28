@@ -15,7 +15,7 @@ class SurahInfoListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
     surahInfoList.getSurahInfo().then((_){   
-      print('data retrived');
+      print('data retrived' + surahInfoList.surahsInfo.length.toString());
     });
 
     int _selectedNumberOfSurah = 5;

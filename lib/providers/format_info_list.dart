@@ -14,7 +14,7 @@ class FormatInfoList with ChangeNotifier{
   Future<void> getFormatInfo() async{
 
     await getDBFormatInfo().then( (val){
-        if(_formatInfo.length < 1 || _formatInfo.length > 124){
+        if(_formatInfo.length < 124){
           getApiFormatInfo().then((val){
             //addSurahInfo();
           });
@@ -24,7 +24,7 @@ class FormatInfoList with ChangeNotifier{
   }
 
   Future<void> getDBFormatInfo() async{
-    print('Starting : getDBSurahInfo()');
+    print('Starting : getDBFormatInfo()');
     try{
       final dbData = await DBHelper.getData(DBHelper.TABLE_FORMAT_INFO);
 
@@ -39,12 +39,12 @@ class FormatInfoList with ChangeNotifier{
           )
         ).toList();    
       notifyListeners();
-      print('-: getDBSurahInfo()' + _formatInfo.length.toString());
+      print('-: getDBFormatInfo()' + _formatInfo.length.toString());
     }catch (error){
-      print('Error : getDBSurahInfo()' + error.toString());
+      print('Error : getDBFormatInfo()' + error.toString());
       return;
     }
-    print('Done : getDBSurahInfo()');
+    print('Done : getDBFormatInfo()');
     return;
   }
 

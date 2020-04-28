@@ -15,7 +15,7 @@ class SurahInfoList with ChangeNotifier{
   Future<void> getSurahInfo() async{
 
     await getDBSurahInfo().then( (val){
-        if(_surahsInfo.length < 1 || _surahsInfo.length > 114){
+        if(_surahsInfo.length != 114){
           getApiSurahInfo().then((val){
             //addSurahInfo();
           });
@@ -92,21 +92,7 @@ class SurahInfoList with ChangeNotifier{
             revelationType: jsonResponse['data'][i]['revelationType'],
           ));
       }
-      /*
-      jsonResponse['data'].map((number){
-        jsonResponse['data'][number].map((surahInfo) {
-          print('--- ' + surahInfo['number']);
-          _surahsInfo.add( SurahInfo(
-            number: surahInfo['number'],
-            name: surahInfo['name'],
-            englishName: surahInfo['englishName'],
-            englishNameTranslation: surahInfo['englishNameTranslation'],
-            numberOfAyahs: surahInfo['numberOfAyahs'],
-            revelationType: surahInfo['revelationType'],
-          ));
-        });
-      });
-      */
+     
       notifyListeners();
         }else{
             print('-------------error----------------');

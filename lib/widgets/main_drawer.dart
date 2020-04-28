@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../providers/format_info_list.dart';
+import 'package:provider/provider.dart';
 
 
 class MainDrawer extends StatefulWidget {
@@ -66,6 +67,11 @@ class _MainDrawerState extends State<MainDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    var formatInfoList = Provider.of<FormatInfoList>(context, listen: false);
+    formatInfoList.getFormatInfo().then((_){   
+      print('format data retrived');
+    });
+
     print('build ${_selectedSurahno.toString()}');
     return Drawer(
         child: Column(
