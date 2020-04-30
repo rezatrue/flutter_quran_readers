@@ -4,6 +4,10 @@ import 'package:path/path.dart' as path;
 import 'package:sqflite/sqlite_api.dart';
 
 class DBHelper {
+  static const String  TABLE_AYAH_INFO = 'list_ayah';
+  static String listOfAyahSql = 
+    'CREATE TABLE '+ TABLE_AYAH_INFO +'(id TEXT PRIMARY KEY, numberOfSurah INTEGER, number INTEGER, numberInSurah INTEGER, text TEXT, page INTEGER, sajda TEXT, identifier TEXT, language TEXT, englishName TEXT, format TEXT, type TEXT, direction TEXT)';
+
   static const String  TABLE_SURAH_INFO = 'list_surah';
   static String listOfSurahSql = 
     'CREATE TABLE '+ TABLE_SURAH_INFO +'(id TEXT PRIMARY KEY, number INTEGER, name TEXT, englishName TEXT, englishNameTranslation TEXT, numberOfAyahs INTEGER, revelationType TEXT)';
@@ -21,9 +25,10 @@ class DBHelper {
       path.join(dbPath, 'quran.db'),
       onCreate: (db, version){
          return db.execute(listOfSurahSql).then((_){
-            return db.execute(listOfFormatSql);
-         });
-         
+            return db.execute(listOfFormatSql).then((_){
+              return db.execute(listOfAyahSql);
+            });
+         });         
       }, 
       version: 1 
       );
@@ -48,4 +53,13 @@ class DBHelper {
     return db.query(table);
   }
 
+  static Future<List<Map<String, dynamic>>> getAyah(String table, int numberOfSurah, String identifier) async {
+    final db = await DBHelper.database();
+    print('getAyah db data');
+    return db.query(table, where: 'numberOfSurah = ? and identifier = ?', whereArgs: ['${numberOfSurah.toString()} , $identifier']);
+  }
+    
+
 }
+    
+    
