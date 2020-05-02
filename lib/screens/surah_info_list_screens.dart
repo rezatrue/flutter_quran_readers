@@ -53,8 +53,8 @@ class SurahInfoListScreen extends StatelessWidget {
                           margin: EdgeInsets.all(2),
                           color: Colors.black54,
                           child: ListTile(
-                            title: Text(surahInfo.number.toString() + ': ' + surahInfo.name),
-                            subtitle: Text(surahInfo.englishName + '('+ surahInfo.englishNameTranslation + ') - ' + surahInfo.revelationType),
+                            title: Text('${surahInfo.number.toString()} : ${surahInfo.name}', style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),),
+                            subtitle: Text('${surahInfo.englishName} ( ${surahInfo.englishNameTranslation} ) - ${surahInfo.revelationType}',  style: TextStyle(fontSize: 15, color: Colors.white),),
                             onTap: () {
                               print('${surahInfo.name} ${surahInfo.number}'); 
                               openDrawerWithNumber(surahInfo.number);

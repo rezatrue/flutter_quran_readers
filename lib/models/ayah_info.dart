@@ -7,7 +7,7 @@ int number;
 int numberInSurah;
 String text; // the ayah / translation / audio
 int page;
-String sajda;
+bool sajda;
 String identifier;
 String language;
 String englishName;

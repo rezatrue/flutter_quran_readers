@@ -24,11 +24,18 @@ class DBHelper {
     return sql.openDatabase(
       path.join(dbPath, 'quran.db'),
       onCreate: (db, version){
-         return db.execute(listOfSurahSql).then((_){
-            return db.execute(listOfFormatSql).then((_){
-              return db.execute(listOfAyahSql);
-            });
-         });         
+                Batch batch = db.batch();
+                batch.execute(listOfSurahSql);
+                batch.execute(listOfFormatSql);
+                batch.execute(listOfAyahSql);  
+                batch.commit().then((_){
+                  return;
+                });
+        // return db.execute(listOfSurahSql).then((_){
+        //     return db.execute(listOfFormatSql).then((_){
+        //       return db.execute(listOfAyahSql);
+        //     });
+        //  });         
       }, 
       version: 1 
       );
@@ -56,7 +63,9 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getAyah(String table, int numberOfSurah, String identifier) async {
     final db = await DBHelper.database();
     print('getAyah db data');
-    return db.query(table, where: 'numberOfSurah = ? and identifier = ?', whereArgs: ['${numberOfSurah.toString()} , $identifier']);
+    //return db.query(table);
+    //return db.query(table, where: 'numberOfSurah = ? and identifier = ?', whereArgs: ['${numberOfSurah.toString()}', '$identifier']);
+    return db.query(table, where: 'numberOfSurah = ? and identifier = ?', whereArgs: [ 114 , 'en.asad']);
   }
     
 

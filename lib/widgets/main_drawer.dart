@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../providers/format_info_list.dart';
 import 'package:provider/provider.dart';
-
+import '../screens/ayah_info_list_screen.dart';
 
 class MainDrawer extends StatefulWidget {
 
@@ -20,9 +20,9 @@ class _MainDrawerState extends State<MainDrawer> {
   TransType _translationDecoration = TransType.InLine;
   bool _isRepeat = false;
 
-  List<String> _listOfSurahs = ['Fatiha', 'Bakara', 'Al-Imran', 'An-Nissa', 'Al-Maaida', 'Al-Anaam'];
+  List<String> _listOfSurahs = ['Fatiha', 'Bakara', 'Al-Imran', 'An-Nissa', 'Al-Maaida', 'Al-Nas'];
   String _selectedSurah = 'Fatiha';
-  List<int> _listOfSurahsno = [1,2,3,4,5,255];
+  List<int> _listOfSurahsno = [1,2,3,4,5,114];
   int _selectedSurahno = 1;
 
   @override
@@ -115,6 +115,7 @@ class _MainDrawerState extends State<MainDrawer> {
                         ),
                         ),
                         Text('NUMBER:', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Expanded(child: 
                         DropdownButton<int>( 
                           value: _selectedSurahno,
                           icon: Icon(Icons.arrow_downward),
@@ -130,7 +131,7 @@ class _MainDrawerState extends State<MainDrawer> {
                             selectSurah(number: number);
                           },
                         ),
-                        
+                        )
                       ],),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -183,6 +184,8 @@ class _MainDrawerState extends State<MainDrawer> {
                               .of(context)
                               .showSnackBar(SnackBar(content: Text('Processing Data')));
                         }
+                        Navigator.of(context).pushNamed(AyahInfoListScreen.routeName);
+
                       },
                       child: Text('Submit'),
                     ),
