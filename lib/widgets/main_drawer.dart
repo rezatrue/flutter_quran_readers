@@ -6,6 +6,7 @@ import '../screens/ayah_info_list_screen.dart';
 class MainDrawer extends StatefulWidget {
 
   MainDrawer({Key key, this.serialNumber}) : super(key: key);  
+
   final int serialNumber;
 
   @override
@@ -14,22 +15,33 @@ class MainDrawer extends StatefulWidget {
 
 enum TransType { InLine , AsAWhole }
   
+
 class _MainDrawerState extends State<MainDrawer> {
   final _formKey = GlobalKey<FormState>();
-  bool _isTranstation = false;
-  TransType _translationDecoration = TransType.InLine;
-  bool _isRepeat = false;
 
   List<String> _listOfSurahs = ['Fatiha', 'Bakara', 'Al-Imran', 'An-Nissa', 'Al-Maaida', 'Al-Nas'];
   String _selectedSurah = 'Fatiha';
-  List<int> _listOfSurahsno = [1,2,3,4,5,114];
+  List<int> _listOfSurahsno = [1,2,3,4,5,6];
   int _selectedSurahno = 1;
+
+  
+  var formatInfoList;
+  List<String> _listVerseByVerse = [];
+  String _selectedAudioVerse = 'Click to Seelct';
+
 
   @override
   void initState() {
-    int num = widget.serialNumber; 
-    if(num != 0) _selectedSurahno = num;
-    print('initState ${num.toString()}');
+    print('serialNumber  create ${widget.serialNumber.toString()}');
+    /*
+     formatInfoList = Provider.of<FormatInfoList>(context, listen: false).getFormatInfo().then((_){
+       setState(() {
+         _listVerseByVerse = formatInfoList.formatInfo.map((val){
+           return val.name;
+         }).toList();
+       });
+     });
+    */
     super.initState();
   }
 
@@ -46,33 +58,18 @@ class _MainDrawerState extends State<MainDrawer> {
     });
   }
 
-  void _switchRepeat(bool value){
-    setState(() {
-      _isRepeat = value;
-    });
-  }
+    bool _audioEnable = false;
 
-  void _switchTranslationDecoration(TransType value){
-    setState(() {
-      _translationDecoration = value;
-    });
-  }
-
-  void _switchTranslation (var value){
-    setState(() {
-      _isTranstation = value;
-    });
-  }
-
+    void _audioOptionEnable(bool val){
+      setState(() {
+      _audioEnable = val;
+      });
+    }
+    
 
   @override
   Widget build(BuildContext context) {
-    var formatInfoList = Provider.of<FormatInfoList>(context, listen: false);
-    formatInfoList.getFormatInfo().then((_){   
-      print('format data retrived');
-    });
-
-    print('build ${_selectedSurahno.toString()}');
+    print('serialNumber build ${widget.serialNumber.toString()}');
     return Drawer(
         child: Column(
           children: <Widget>[
@@ -93,104 +90,90 @@ class _MainDrawerState extends State<MainDrawer> {
               child: Form(
                 key: _formKey,
                 child: ListView(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    children: <Widget>[
-                      Row(children: <Widget>[
-                        Text('SURAH:', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Expanded(
-                          child: DropdownButton<String>(
-                          value: _selectedSurah,
-                          icon: Icon(Icons.arrow_downward),
-                          iconSize: 24,
-                          elevation: 16,
-                          items: _listOfSurahs.map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),  
-                          onChanged: (name) {
-                              selectSurah(name: name);
-                          },
-                        ),
-                        ),
-                        Text('NUMBER:', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Expanded(child: 
-                        DropdownButton<int>( 
-                          value: _selectedSurahno,
-                          icon: Icon(Icons.arrow_downward),
-                          iconSize: 24,
-                          elevation: 16,
-                          items: _listOfSurahsno.map<DropdownMenuItem<int>>((int value) {
-                            return DropdownMenuItem<int>(
-                              value: value,
-                              child: Text(value.toString()),
-                            );
-                          }).toList(),  
-                          onChanged: (number) {
-                            selectSurah(number: number);
-                          },
-                        ),
-                        )
-                      ],),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                        Text('Repeat:'),
-                        Switch(
-                          value: _isRepeat, 
-                          onChanged: (value) => _switchRepeat(value)),
-                      ],),
-                      Row(
-                        children: <Widget>[
-                        Text('Translation:'),
-                        Switch(
-                          value: _isTranstation, 
-                          onChanged: (value) => _switchTranslation(value)),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Row(children: <Widget>[
-                              Radio(value: TransType.InLine, groupValue: _translationDecoration, onChanged: _isTranstation ? (value) => _switchTranslationDecoration(value) : null),
-                              Text('line by line'),
-                            ],),
-                            Row(children: <Widget>[
-                              Radio(value: TransType.AsAWhole, groupValue: _translationDecoration, onChanged: _isTranstation ? (value) => _switchTranslationDecoration(value) : null),
-                              Text('whole text'), 
-                            ],),
-                          ],
-                        ),
-                      
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      children: <Widget>[
+                        Row(children: <Widget>[
+                          Text('SURAH:', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Expanded(
+                            child: DropdownButton<String>(
+                            value: _selectedSurah,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 16,
+                            elevation: 12,
+                            items: _listOfSurahs.map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),  
+                            onChanged: (name) {
+                                selectSurah(name: name);
+                            },
+                          ),
+                          ),
+                          Text('NUMBER:', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Expanded(child: 
+                          DropdownButton<int>( 
+                            value: _selectedSurahno,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 16,
+                            elevation: 16,
+                            items: _listOfSurahsno.map<DropdownMenuItem<int>>((int value) {
+                              return DropdownMenuItem<int>(
+                                value: value,
+                                child: Text(value.toString()),
+                              );
+                            }).toList(),  
+                            onChanged: (number) {
+                              selectSurah(number: number);
+                            },
+                          ),
+                          )
                         ],),
-                      Row(children: <Widget>[
-                        Text('Translator Name:'),
-                        Expanded(
-                          child: TextFormField(
-                          // The validator receives the text that the user has entered.
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter name';
-                            }
-                            return null;
-                          },
-                      ),
-                        ),
-                      ],),
-                     RaisedButton(
-                      onPressed: () {
-                        // Validate returns true if the form is valid, otherwise false.
-                        if (_formKey.currentState.validate()) {
-                          Scaffold
-                              .of(context)
-                              .showSnackBar(SnackBar(content: Text('Processing Data')));
-                        }
-                        Navigator.of(context).pushNamed(AyahInfoListScreen.routeName);
+                        // AUDIO 
+                       Row(children: <Widget>[
+                        Text('Audio : '), 
+                        Checkbox(
+                          value: _audioEnable, 
+                          onChanged: (val) {
+                            _audioOptionEnable(val);
+                          }),
+                       ],), 
+                       Row(
+                         children: <Widget>[
+                           Text('versebyverse : '),
+                            DropdownButton<String>(
+                              value: _selectedAudioVerse,
+                              icon: Icon(Icons.arrow_downward),
+                              iconSize: 16,
+                              elevation: 16,
+                              items: _listVerseByVerse.map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value.toString()),
+                                );
+                                }).toList(),  
+                                onChanged: (val) {
+                                  _selectedAudioVerse = val;
+                                },
+                            ),
+                         ],
+                       ),
 
-                      },
-                      child: Text('Submit'),
+                       RaisedButton(
+                        onPressed: () {
+                          // Validate returns true if the form is valid, otherwise false.
+                          if (_formKey.currentState.validate()) {
+                            Scaffold
+                                .of(context)
+                                .showSnackBar(SnackBar(content: Text('Processing Data')));
+                          }
+                          Navigator.of(context).pushNamed(AyahInfoListScreen.routeName);
+                        },
+                        child: Text('Submit'),
+                      ),
+                      ],
                     ),
-                    ],
-                  ),
               ),
             ),
           ],

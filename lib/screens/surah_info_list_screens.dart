@@ -3,33 +3,54 @@ import '../widgets/main_drawer.dart';
 import 'package:provider/provider.dart';
 import '../providers/surah_info_list.dart';
 
-class SurahInfoListScreen extends StatelessWidget {
+class SurahInfoListScreen extends StatefulWidget {
   SurahInfoListScreen({Key key, this.title}) : super(key: key);
   final String title;
-
   static const String routeName = '/surah-info-list-screen';
 
+  @override
+  _SurahInfoListScreenState createState() => _SurahInfoListScreenState();
+}
+
+class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
- @override
-  Widget build(BuildContext context) {
+
+  @override
+  void initState() {
     var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
     surahInfoList.getSurahInfo().then((_){   
       print('data retrived' + surahInfoList.surahsInfo.length.toString());
     });
+    super.initState();
+  }
 
-    int _selectedNumberOfSurah = 5;
-    void openDrawerWithNumber(int surahNumber){
-      print('openDrawer $surahNumber');
+  int _selectedNumberOfSurah = 1;
+
+  void openDrawerWithNumber(int surahNumber){
+    setState(() {
       _selectedNumberOfSurah = surahNumber;
       print('openDrawer $_selectedNumberOfSurah');
       _scaffoldKey.currentState.openDrawer();
-    }
+    });
+  }
 
+
+  @override
+  void didChangeDependencies() {
+    // var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
+    // surahInfoList.getSurahInfo().then((_){   
+    //   print('data retrived' + surahInfoList.surahsInfo.length.toString());
+    // });
+    super.didChangeDependencies();
+  }
+
+ @override
+  Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
         leading: IconButton(
           icon: Icon(Icons.menu), 
           onPressed: () {
@@ -37,7 +58,7 @@ class SurahInfoListScreen extends StatelessWidget {
           },
         ),
       ),
-      drawer: MainDrawer(serialNumber: _selectedNumberOfSurah),
+      drawer: MainDrawer(key: ValueKey(_selectedNumberOfSurah), serialNumber: _selectedNumberOfSurah),
       body: Consumer<SurahInfoList>(
         builder: (ctx, surahInfoList, ch)
         => Container(

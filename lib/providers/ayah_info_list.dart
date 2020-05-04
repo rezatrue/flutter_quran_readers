@@ -25,6 +25,9 @@ class AyahInfoList with ChangeNotifier{
       }
     );    
   }
+  Future<void> clearDB() async{
+      DBHelper.clearTable(DBHelper.TABLE_AYAH_INFO);
+  }
 
   Future<void> getDBAyahInfo(int surahNumber) async{
     print('Starting : getDBAyahInfo()');

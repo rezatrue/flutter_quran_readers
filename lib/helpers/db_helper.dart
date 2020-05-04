@@ -63,9 +63,11 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getAyah(String table, int numberOfSurah, String identifier) async {
     final db = await DBHelper.database();
     print('getAyah db data');
+    print('${numberOfSurah.toString()}');
+    print(numberOfSurah.toString());
     //return db.query(table);
-    //return db.query(table, where: 'numberOfSurah = ? and identifier = ?', whereArgs: ['${numberOfSurah.toString()}', '$identifier']);
-    return db.query(table, where: 'numberOfSurah = ? and identifier = ?', whereArgs: [ 114 , 'en.asad']);
+    return db.query(table, where: 'identifier = ?', whereArgs: ['$identifier']);
+    //return db.query(table, where: 'numberOfSurah = ? and identifier = ?', whereArgs: [ 114 , 'en.asad']);
   }
     
 
