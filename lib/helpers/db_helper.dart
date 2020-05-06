@@ -30,21 +30,17 @@ class DBHelper {
                 batch.execute(listOfAyahSql);  
                 batch.commit().then((_){
                   return;
-                });
-        // return db.execute(listOfSurahSql).then((_){
-        //     return db.execute(listOfFormatSql).then((_){
-        //       return db.execute(listOfAyahSql);
-        //     });
-        //  });         
+                });     
       }, 
       version: 1 
       );
 
   }
 
-  static Future<void> clearTable(String table) async{
+  static Future<void> clearTable(String table, {String where, List<String> whereArgs}) async{
     print("deleting");
     final db = await DBHelper.database();
+    if(where != null && whereArgs != []) db.delete(table, where: where, whereArgs: whereArgs);
       db.delete(table);
   }
  
@@ -66,7 +62,7 @@ class DBHelper {
     print('${numberOfSurah.toString()}');
     print(numberOfSurah.toString());
     //return db.query(table);
-    return db.query(table, where: 'identifier = ?', whereArgs: ['$identifier']);
+    return db.query(table, where: '"numberOfSurah" = ? and "identifier" = ?', whereArgs: [ '${numberOfSurah.toString()}' , '$identifier']);
     //return db.query(table, where: 'numberOfSurah = ? and identifier = ?', whereArgs: [ 114 , 'en.asad']);
   }
     

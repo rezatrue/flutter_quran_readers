@@ -10,7 +10,7 @@ static const String routeName = '/ayah-info-list-screen';
   Widget build(BuildContext context) {
     var ayahInfoList = Provider.of<AyahInfoList>(context, listen: false);
 
-    ayahInfoList.getAyahInfo(114,['quran-uthmani' ,'en.asad' ,'ar.alafasy']).then((_){  
+    ayahInfoList.getAyahInfo(114, 6, ['quran-uthmani' ,'en.asad' ,'ar.alafasy']).then((_){  
 
       print('ayah - data retrived - ${ayahInfoList.ayahInfo.length}');
       if(ayahInfoList.ayahInfo.length < 1) return;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../providers/format_info_list.dart';
+import '../providers/surah_info_list.dart';
+import '../models/surah_info.dart';
+import '../models/format_info.dart';
 import 'package:provider/provider.dart';
 import '../screens/ayah_info_list_screen.dart';
 
@@ -19,13 +22,13 @@ enum TransType { InLine , AsAWhole }
 class _MainDrawerState extends State<MainDrawer> {
   final _formKey = GlobalKey<FormState>();
 
-  List<String> _listOfSurahs = ['Fatiha', 'Bakara', 'Al-Imran', 'An-Nissa', 'Al-Maaida', 'Al-Nas'];
+
+  List<SurahInfo> _surahInfoList = [];
+  List<FormatInfo> _formatInfo = [];
   String _selectedSurah = 'Fatiha';
-  List<int> _listOfSurahsno = [1,2,3,4,5,6];
   int _selectedSurahno = 1;
 
   
-  var formatInfoList;
   List<String> _listVerseByVerse = [];
   String _selectedAudioVerse = 'Click to Seelct';
 
@@ -33,29 +36,46 @@ class _MainDrawerState extends State<MainDrawer> {
   @override
   void initState() {
     print('serialNumber  create ${widget.serialNumber.toString()}');
-    /*
-     formatInfoList = Provider.of<FormatInfoList>(context, listen: false).getFormatInfo().then((_){
+    _selectedSurahno = widget.serialNumber != null ? widget.serialNumber : 1;
+    var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
+    surahInfoList.getSurahInfo().then((_){
+      setState(() {
+      _surahInfoList = surahInfoList.surahsInfo;
+      });
+      print('data retrived' + surahInfoList.surahsInfo.length.toString());
+    });
+
+     var formatInfoList = Provider.of<FormatInfoList>(context, listen: false);
+       formatInfoList.getFormatInfo().then((_){
        setState(() {
-         _listVerseByVerse = formatInfoList.formatInfo.map((val){
-           return val.name;
-         }).toList();
+         _formatInfo = formatInfoList.formatInfo;
        });
      });
-    */
+    
     super.initState();
   }
 
   void selectSurah({name, number}){
-    setState(() {
+     print(name.toString());
       if(name != null){
-        _selectedSurah = name;
-      _selectedSurahno = _listOfSurahs.indexOf(name)+1;
+        _surahInfoList.map((surahInfo){ 
+          if (surahInfo.englishName == name){
+            setState(() {
+             _selectedSurah = name;
+             print(_selectedSurah);
+             _selectedSurahno = _surahInfoList.indexOf(surahInfo)+1;  
+             print(_selectedSurahno.toString());
+            });
+          } 
+          });
       }
       if(number != null){
-        _selectedSurahno = number;
-        _selectedSurah = _listOfSurahs[_listOfSurahsno.indexOf(number)];
+        setState(() {
+          _selectedSurahno = number;
+          _selectedSurah = _surahInfoList[number].englishName;
+        });
       }
-    });
+    
   }
 
     bool _audioEnable = false;
@@ -69,7 +89,10 @@ class _MainDrawerState extends State<MainDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    print('serialNumber build ${widget.serialNumber.toString()}');
+
+    print('serialNumber build ${widget.serialNumber.toString()}}');
+    print('serialNumber build ${_surahInfoList.length.toString()}}');
+    print('serialNumber build ${_formatInfo.length.toString()}}');
     return Drawer(
         child: Column(
           children: <Widget>[
@@ -96,14 +119,14 @@ class _MainDrawerState extends State<MainDrawer> {
                           Text('SURAH:', style: TextStyle(fontWeight: FontWeight.bold),),
                           Expanded(
                             child: DropdownButton<String>(
-                            value: _selectedSurah,
+                            value: _surahInfoList[_selectedSurahno-1].englishName,
                             icon: Icon(Icons.arrow_downward),
                             iconSize: 16,
                             elevation: 12,
-                            items: _listOfSurahs.map<DropdownMenuItem<String>>((String value) {
+                            items: _surahInfoList.map<DropdownMenuItem<String>>((SurahInfo value) {
                               return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
+                                value: value.englishName,
+                                child: Text(value.englishName),
                               );
                             }).toList(),  
                             onChanged: (name) {
@@ -111,17 +134,21 @@ class _MainDrawerState extends State<MainDrawer> {
                             },
                           ),
                           ),
-                          Text('NUMBER:', style: TextStyle(fontWeight: FontWeight.bold),),
+                        ],),
+                        // Number
+                        Row(
+                          children: <Widget>[
+                            Text('NUMBER:', style: TextStyle(fontWeight: FontWeight.bold),),
                           Expanded(child: 
                           DropdownButton<int>( 
                             value: _selectedSurahno,
                             icon: Icon(Icons.arrow_downward),
                             iconSize: 16,
                             elevation: 16,
-                            items: _listOfSurahsno.map<DropdownMenuItem<int>>((int value) {
+                            items: _surahInfoList.map<DropdownMenuItem<int>>((SurahInfo value) {
                               return DropdownMenuItem<int>(
-                                value: value,
-                                child: Text(value.toString()),
+                                value: value.number,
+                                child: Text(value.number.toString()),
                               );
                             }).toList(),  
                             onChanged: (number) {
@@ -129,7 +156,8 @@ class _MainDrawerState extends State<MainDrawer> {
                             },
                           ),
                           )
-                        ],),
+                          ],
+                        ),
                         // AUDIO 
                        Row(children: <Widget>[
                         Text('Audio : '), 

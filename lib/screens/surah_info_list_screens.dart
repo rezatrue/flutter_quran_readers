@@ -27,6 +27,7 @@ class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
 
   int _selectedNumberOfSurah = 1;
 
+
   void openDrawerWithNumber(int surahNumber){
     setState(() {
       _selectedNumberOfSurah = surahNumber;
@@ -38,10 +39,10 @@ class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
 
   @override
   void didChangeDependencies() {
-    // var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
-    // surahInfoList.getSurahInfo().then((_){   
-    //   print('data retrived' + surahInfoList.surahsInfo.length.toString());
-    // });
+    var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
+    surahInfoList.getSurahInfo().then((_){   
+      print('data retrived' + surahInfoList.surahsInfo.length.toString());
+    });
     super.didChangeDependencies();
   }
 
@@ -66,7 +67,7 @@ class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
           child: ListView(
             children: <Widget>[
               surahInfoList.surahsInfo.length < 114 
-                ? Center(child: CircularProgressIndicator(),)  
+                ? Container(child: Center(child: CircularProgressIndicator(),))  
                 : Column(  
                     children: 
                       surahInfoList.surahsInfo.map((surahInfo) {

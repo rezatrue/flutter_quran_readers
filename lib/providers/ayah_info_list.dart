@@ -13,15 +13,15 @@ class AyahInfoList with ChangeNotifier{
 
   List<String> missingIdentifiyers = [];
   
-  Future<void> getAyahInfo(int surahNumber, List<String> identifiyers) async{
+  Future<void> getAyahInfo(int surahNumber,int totalAyah, List<String> identifiyers) async{
     missingIdentifiyers = identifiyers;
     print('missingIdentifiyers - ${missingIdentifiyers.length.toString()}');
     return await getDBAyahInfo(surahNumber).then( (_){
-          if(missingIdentifiyers.length > 0){
-              return getApiAyahInfo(surahNumber).then((_){
+          if( totalAyah * identifiyers.length != _ayahInfo.length){
+            return getApiAyahInfo(surahNumber).then((_){
                 return;
               });
-          }
+          } 
       }
     );    
   }
@@ -57,7 +57,9 @@ class AyahInfoList with ChangeNotifier{
                 direction: item['direction'],
                 )
               ).toList();  
+              print('removing $tempIdentifiyers[i])');
               missingIdentifiyers.removeWhere((value) => (value == tempIdentifiyers[i]));
+              print('number after removal ${missingIdentifiyers.length.toString()}');
             }catch (error){ 
               print('Error : getDBAyahInfo()' + error.toString());
             }
@@ -133,7 +135,9 @@ class AyahInfoList with ChangeNotifier{
                         identifier: identifier, language: language, englishName: englishName,
                         format: format, type: type, direction: direction,
                       ));
-                    missingIdentifiyers.removeWhere((value) => (value == identifier));
+                    print('api removing $tempIdentifiyers[i]) - identifier');  
+                    missingIdentifiyers.removeWhere((value) => (value == tempIdentifiyers[i]));
+                    print('number after removal ${missingIdentifiyers.length.toString()}');
                     notifyListeners();
                   }
               }
