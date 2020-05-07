@@ -37,10 +37,12 @@ class _MainDrawerState extends State<MainDrawer> {
   void initState() {
     print('serialNumber  create ${widget.serialNumber.toString()}');
     _selectedSurahno = widget.serialNumber != null ? widget.serialNumber : 1;
+
     var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
     surahInfoList.getSurahInfo().then((_){
       setState(() {
       _surahInfoList = surahInfoList.surahsInfo;
+      _selectedSurah = widget.serialNumber != null ? _surahInfoList[_selectedSurahno-1].englishName : 'Fatiha';
       });
       print('data retrived' + surahInfoList.surahsInfo.length.toString());
     });
@@ -56,20 +58,21 @@ class _MainDrawerState extends State<MainDrawer> {
   }
 
   void selectSurah({name, number}){
-     print(name.toString());
+    if(name != null && number != null) return;
+     
       if(name != null){
-        _surahInfoList.map((surahInfo){ 
-          if (surahInfo.englishName == name){
+        
+       int len = _surahInfoList.length;
+        for(int i = 0; i < len ; i++){
+          print(_surahInfoList[i].name);
+          if (_surahInfoList[i].englishName == name){
             setState(() {
-             _selectedSurah = name;
-             print(_selectedSurah);
-             _selectedSurahno = _surahInfoList.indexOf(surahInfo)+1;  
-             print(_selectedSurahno.toString());
+            _selectedSurah = name;
+            _selectedSurahno = _surahInfoList.indexOf(_surahInfoList[i])+1;  
             });
-          } 
-          });
-      }
-      if(number != null){
+          }
+        }     
+      }else if(number != null){
         setState(() {
           _selectedSurahno = number;
           _selectedSurah = _surahInfoList[number].englishName;
@@ -119,7 +122,7 @@ class _MainDrawerState extends State<MainDrawer> {
                           Text('SURAH:', style: TextStyle(fontWeight: FontWeight.bold),),
                           Expanded(
                             child: DropdownButton<String>(
-                            value: _surahInfoList[_selectedSurahno-1].englishName,
+                            value: _selectedSurah,
                             icon: Icon(Icons.arrow_downward),
                             iconSize: 16,
                             elevation: 12,

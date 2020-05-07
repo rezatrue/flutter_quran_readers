@@ -37,8 +37,8 @@ class MyApp extends StatelessWidget {
           //home: MyHomePage(title: appName),
           initialRoute: SurahInfoListScreen.routeName,
           routes: {
-            '/': (ctx) => MyHomePage(title: appName),
-            SurahInfoListScreen.routeName : (ctx) => SurahInfoListScreen(title: appName,),
+            //'/': (ctx) => MyHomePage(title: appName),
+            '/' : (ctx) => SurahInfoListScreen(title: appName,),
             AyahInfoListScreen.routeName : (ctx) => AyahInfoListScreen(),
           },
         ),

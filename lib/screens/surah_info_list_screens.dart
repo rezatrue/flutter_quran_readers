@@ -64,11 +64,9 @@ class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
         builder: (ctx, surahInfoList, ch)
         => Container(
           padding: EdgeInsets.all(2),
-          child: ListView(
-            children: <Widget>[
-              surahInfoList.surahsInfo.length < 114 
-                ? Container(child: Center(child: CircularProgressIndicator(),))  
-                : Column(  
+          child: surahInfoList.surahsInfo.length < 114 
+                ? Center(child: CircularProgressIndicator(),)  
+                : ListView(  
                     children: 
                       surahInfoList.surahsInfo.map((surahInfo) {
                         return Container(
@@ -85,8 +83,6 @@ class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
                         ); } 
                       ).toList(),     
                 ), 
-            ],
-          ),
         ),
       ),
 
