@@ -22,16 +22,44 @@ enum TransType { InLine , AsAWhole }
 class _MainDrawerState extends State<MainDrawer> {
   final _formKey = GlobalKey<FormState>();
 
-
+  // Surah
   List<SurahInfo> _surahInfoList = [];
-  List<FormatInfo> _formatInfo = [];
   String _selectedSurah = 'Fatiha';
   int _selectedSurahno = 1;
+  // Qurean test
+  List<FormatInfo> _textTypeInfo = [];
+  String _selectedTextIdentifier = 'quran-kids';
+  String _selectedTextType = 'Kids';
+  void selectText(String type){
+      String qidentifier;
+      for(int i = 0; i < _textTypeInfo.length; i++){
+          if(_textTypeInfo[i].name  == type) qidentifier = _textTypeInfo[i].identifier;
+      }
+      setState(() {
+        _selectedTextIdentifier = qidentifier;
+        _selectedTextType = type;
+        print(_selectedTextIdentifier);
+      });
+  }
+  // translation
+  List<FormatInfo> _translationInfo = [];
+  String _selectedtranslationIdentifier = 'en.asad';
+  String _selectedTranslator = 'Asad';
+  void selectTranslator(String translator){
+      String tidentifier;
+      for(int i = 0; i < _translationInfo.length; i++){
+          if(_translationInfo[i].name  == translator) tidentifier = _translationInfo[i].identifier;
+      }
+      setState(() {
+        _selectedtranslationIdentifier = tidentifier;
+        _selectedTranslator = translator;
+        print(_selectedtranslationIdentifier);
+      });
+  }
 
-  
+
   List<String> _listVerseByVerse = [];
   String _selectedAudioVerse = 'Click to Seelct';
-
 
   @override
   void initState() {
@@ -50,7 +78,11 @@ class _MainDrawerState extends State<MainDrawer> {
      var formatInfoList = Provider.of<FormatInfoList>(context, listen: false);
        formatInfoList.getFormatInfo().then((_){
        setState(() {
-         _formatInfo = formatInfoList.formatInfo;
+          _textTypeInfo = formatInfoList.formatTextTypeInfo;
+          _translationInfo = formatInfoList.formatTranslationInfo;
+          // _textTypeInfo = formatInfoList.formatAudioAyahInfo;
+          // _textTypeInfo = formatInfoList.formatAudioTranslationInfo;
+         print('${formatInfoList.formatTextTypeInfo.length}-${formatInfoList.formatTranslationInfo.length}-${formatInfoList.formatAudioAyahInfo.length}-${formatInfoList.formatAudioTranslationInfo.length}');
        });
      });
     
@@ -59,9 +91,7 @@ class _MainDrawerState extends State<MainDrawer> {
 
   void selectSurah({name, number}){
     if(name != null && number != null) return;
-     
       if(name != null){
-        
        int len = _surahInfoList.length;
         for(int i = 0; i < len ; i++){
           print(_surahInfoList[i].name);
@@ -78,7 +108,6 @@ class _MainDrawerState extends State<MainDrawer> {
           _selectedSurah = _surahInfoList[number].englishName;
         });
       }
-    
   }
 
     bool _audioEnable = false;
@@ -92,10 +121,6 @@ class _MainDrawerState extends State<MainDrawer> {
 
   @override
   Widget build(BuildContext context) {
-
-    print('serialNumber build ${widget.serialNumber.toString()}}');
-    print('serialNumber build ${_surahInfoList.length.toString()}}');
-    print('serialNumber build ${_formatInfo.length.toString()}}');
     return Drawer(
         child: Column(
           children: <Widget>[
@@ -119,7 +144,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       children: <Widget>[
                         Row(children: <Widget>[
-                          Text('SURAH:', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Text('SURAH : ', style: TextStyle(fontWeight: FontWeight.bold),),
                           Expanded(
                             child: DropdownButton<String>(
                             value: _selectedSurah,
@@ -141,7 +166,7 @@ class _MainDrawerState extends State<MainDrawer> {
                         // Number
                         Row(
                           children: <Widget>[
-                            Text('NUMBER:', style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text('NUMBER : ', style: TextStyle(fontWeight: FontWeight.bold),),
                           Expanded(child: 
                           DropdownButton<int>( 
                             value: _selectedSurahno,
@@ -161,6 +186,29 @@ class _MainDrawerState extends State<MainDrawer> {
                           )
                           ],
                         ),
+                        // TEXT TYPE
+                        Row(children: <Widget>[
+                          Text('TEXT TYPE : ', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Expanded(
+                            child: DropdownButton<String>(
+                            value: _selectedTextType,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 16,
+                            elevation: 12,
+                            items: _textTypeInfo.map<DropdownMenuItem<String>>((FormatInfo value) {
+                              return DropdownMenuItem<String>(
+                                value: value.name,
+                                child: Text(value.name),
+                              );
+                            }).toList(),  
+                            onChanged: (name) {
+                              selectText(name);
+                            },
+                          ),
+                          ),
+                        ],),
+                        // TRANSLATION
+                       
                         // AUDIO 
                        Row(children: <Widget>[
                         Text('Audio : '), 

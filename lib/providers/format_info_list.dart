@@ -5,18 +5,35 @@ import 'package:http/http.dart' as http;
 import '../helpers/db_helper.dart';
 
 class FormatInfoList with ChangeNotifier{
-  List<FormatInfo> _formatInfo = [];
-  
-  List<FormatInfo> get formatInfo{
-    return [..._formatInfo];
+  //List<FormatInfo> _formatInfo = [];
+  List<FormatInfo> _formatTextTypeInfo = [];
+  List<FormatInfo> _formatTranslationInfo = [];
+  List<FormatInfo> _formatAudioAyahInfo = [];
+  List<FormatInfo> _formatAudioTranslationInfo = [];
+
+  //foramt "text" / "audio"
+  // type "quran", "translation", "tafsir" / "translation" , "versebyverse"
+
+  List<FormatInfo> get formatTextTypeInfo{
+    return [..._formatTextTypeInfo];
+  }
+  List<FormatInfo> get formatTranslationInfo{
+    return [..._formatTranslationInfo];
+  }
+  List<FormatInfo> get formatAudioAyahInfo{
+    return [..._formatAudioAyahInfo];
+  }
+
+  List<FormatInfo> get formatAudioTranslationInfo{
+    return [..._formatAudioTranslationInfo];
   }
 
   Future<void> getFormatInfo() async{
 
     await getDBFormatInfo().then( (val){
-        if(_formatInfo.length < 124){
+        if(_formatTextTypeInfo.length < 1){
           getApiFormatInfo().then((val){
-            //addSurahInfo();
+            return;
           });
         }
       }
@@ -28,23 +45,66 @@ class FormatInfoList with ChangeNotifier{
     try{
       final dbData = await DBHelper.getData(DBHelper.TABLE_FORMAT_INFO);
 
-      _formatInfo = dbData.map((item) => FormatInfo( 
-          identifier: item['identifier'],
-          language: item['language'],
-          name: item['name'],
-          englishName: item['englishName'],
-          format: item['format'],
-          type: item['type'],
-          direction: item['direction'],
-          )
-        ).toList();    
+      dbData.map((item) {  
+
+        String identifier = item['identifier'] ;
+        String language = item['language'] ;
+        String name = item['name'] ;
+        String englishName = item['englishName'] ;
+        String format = item['format'] ;
+        String type = item['type'] ;
+        String direction = item['direction'] ;  
+        //foramt "text" / "audio"
+        // type "quran", "translation", "tafsir" / "translation" , "versebyverse"
+        if(format == "text"){
+            type == "quran" 
+            ? _formatTextTypeInfo.add(FormatInfo(
+                identifier: identifier,
+                language: language,
+                name: name,
+                englishName: englishName,
+                format: format,
+                type: type,
+                direction: direction,
+                ))
+            : _formatTranslationInfo.add(FormatInfo(
+                identifier: identifier,
+                language: language,
+                name: name,
+                englishName: englishName,
+                format: format,
+                type: type,
+                direction: direction,
+                ));
+          }else if (format == "audio"){
+            type == "versebyverse" 
+            ? _formatAudioAyahInfo.add(FormatInfo(
+                identifier: identifier,
+                language: language,
+                name: name,
+                englishName: englishName,
+                format: format,
+                type: type,
+                direction: direction,
+                ))
+            : _formatAudioTranslationInfo.add(FormatInfo(
+                identifier: identifier,
+                language: language,
+                name: name,
+                englishName: englishName,
+                format: format,
+                type: type,
+                direction: direction,
+                ));
+          }
+      });
       notifyListeners();
-      print('-: getDBFormatInfo()' + _formatInfo.length.toString());
+      
     }catch (error){
       print('Error : getDBFormatInfo()' + error.toString());
       return;
     }
-    print('Done : getDBFormatInfo()');
+    print('Done : getDBFormatInfo() ${_formatTextTypeInfo.length}-${_formatTranslationInfo.length}-${_formatAudioAyahInfo.length}-${_formatAudioTranslationInfo.length} ');
     return;
   }
 
@@ -64,28 +124,72 @@ class FormatInfoList with ChangeNotifier{
       if (response.statusCode == 200) {
         var jsonResponse = convert.jsonDecode(response.body);
         if(jsonResponse['code'] == 200 && jsonResponse['status'] == 'OK'){
-  // jsonResponse['data']['ayahs'].map((ayah) => _ayahs.add(AudioAyah(text : ayah['text'],audio: ayah['audio'])));
-        _formatInfo = List<FormatInfo>();
+        
         int numberOfInfo = jsonResponse['data'].length;
         for(int i = 0; i < numberOfInfo; i++){
+
+          String identifier = jsonResponse['data'][i]['identifier'] ;
+          String language = jsonResponse['data'][i]['language'] ;
+          String name = jsonResponse['data'][i]['name'] ;
+          String englishName = jsonResponse['data'][i]['englishName'] ;
+          String format = jsonResponse['data'][i]['format'] ;
+          String type = jsonResponse['data'][i]['type'] ;
+          String direction = jsonResponse['data'][i]['direction'] ;          
+          print(name);
           DBHelper.insert(DBHelper.TABLE_FORMAT_INFO, {
-            'identifier': jsonResponse['data'][i]['identifier'],
-            'language': jsonResponse['data'][i]['language'],
-            'name': jsonResponse['data'][i]['name'],
-            'englishName': jsonResponse['data'][i]['englishName'],
-            'format': jsonResponse['data'][i]['format'],
-            'type': jsonResponse['data'][i]['type'],
-            'direction': jsonResponse['data'][i]['direction'],}
+            'identifier': identifier,
+            'language': language,
+            'name': name,
+            'englishName': englishName,
+            'format': format,
+            'type': type,
+            'direction': direction,}
           );
-          _formatInfo.add(FormatInfo(
-              identifier: jsonResponse['data'][i]['identifier'],
-              language: jsonResponse['data'][i]['language'],
-              name: jsonResponse['data'][i]['name'],
-              englishName: jsonResponse['data'][i]['englishName'],
-              format: jsonResponse['data'][i]['format'],
-              type: jsonResponse['data'][i]['type'],
-              direction: jsonResponse['data'][i]['direction'],
-            ));
+
+          //foramt "text" / "audio"
+          // type "quran", "translation", "tafsir" / "translation" , "versebyverse"
+          if(format == "text"){
+            type == "quran" 
+            ? _formatTextTypeInfo.add(FormatInfo(
+                identifier: identifier,
+                language: language,
+                name: name,
+                englishName: englishName,
+                format: format,
+                type: type,
+                direction: direction,
+                ))
+            : _formatTranslationInfo.add(FormatInfo(
+                identifier: identifier,
+                language: language,
+                name: name,
+                englishName: englishName,
+                format: format,
+                type: type,
+                direction: direction,
+                ));
+          }else if (format == "audio"){
+            type == "versebyverse" 
+            ? _formatAudioAyahInfo.add(FormatInfo(
+                identifier: identifier,
+                language: language,
+                name: name,
+                englishName: englishName,
+                format: format,
+                type: type,
+                direction: direction,
+                ))
+            : _formatAudioTranslationInfo.add(FormatInfo(
+                identifier: identifier,
+                language: language,
+                name: name,
+                englishName: englishName,
+                format: format,
+                type: type,
+                direction: direction,
+                ));
+          }
+          
         }
         
           }else{
@@ -93,15 +197,13 @@ class FormatInfoList with ChangeNotifier{
           }
         }
         }catch (error){
-          print('error : '+ error.toString()+' : ' + _formatInfo.length.toString());
+          print('error : '+ error.toString()+' : ' + _formatTextTypeInfo.length.toString());
           return;
         }
 
-
     }
-      notifyListeners();
-      
-      print('End : get API data' + _formatInfo.length.toString());
+      notifyListeners();      
+      print('End : get API data' + _formatTextTypeInfo.length.toString());
       return;
 
     }
