@@ -135,7 +135,7 @@ class FormatInfoList with ChangeNotifier{
           String format = jsonResponse['data'][i]['format'] ;
           String type = jsonResponse['data'][i]['type'] ;
           String direction = jsonResponse['data'][i]['direction'] ;          
-          print(name);
+          
           DBHelper.insert(DBHelper.TABLE_FORMAT_INFO, {
             'identifier': identifier,
             'language': language,

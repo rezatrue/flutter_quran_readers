@@ -43,8 +43,8 @@ class _MainDrawerState extends State<MainDrawer> {
   }
   // translation
   List<FormatInfo> _translationInfo = [];
-  String _selectedtranslationIdentifier = 'en.asad';
-  String _selectedTranslator = 'Asad';
+  String _selectedtranslationIdentifier = 'en.arberry';
+  String _selectedTranslator = 'Arberry';
   void selectTranslator(String translator){
       String tidentifier;
       for(int i = 0; i < _translationInfo.length; i++){
@@ -56,10 +56,59 @@ class _MainDrawerState extends State<MainDrawer> {
         print(_selectedtranslationIdentifier);
       });
   }
+  // Audio quran
+  List<FormatInfo> _audioAyahInfo = [];
+  String _selectedAudioAyahIdentifier = 'ar.alafasy';
+  String _selectedAudioAyah = 'Alafasy';
+  void selectAudioAyah(String reader){
+      String aqidentifier;
+      for(int i = 0; i < _audioAyahInfo.length; i++){
+          if(_audioAyahInfo[i].name  == reader) aqidentifier = _audioAyahInfo[i].identifier;
+      }
+      setState(() {
+        _selectedAudioAyahIdentifier = aqidentifier;
+        _selectedAudioAyah = reader;
+        print(_selectedAudioAyahIdentifier);
+      });
+  }
+  // Audio translation
+  List<FormatInfo> _translationAudioInfo = [];
+  String _selectedTranslationAudioIdentifier = 'fa.hedayatfarfooladvand';
+  String _selectedTranslationAudio = 'Fooladvand - Hedayatfar';
+  void selectTranslationAudio(String translationAudio){
+      String taidentifier;
+      for(int i = 0; i < _translationAudioInfo.length; i++){
+          if(_translationAudioInfo[i].name  == translationAudio) taidentifier = _translationAudioInfo[i].identifier;
+      }
+      setState(() {
+        _selectedTranslationAudioIdentifier = taidentifier;
+        _selectedTranslationAudio = translationAudio;
+        print(_selectedTranslationAudioIdentifier);
+      });
+  }
+  
+  Widget randeringDropdown(String title, List<FormatInfo> list, String defaultValue, Function select){
+    return Row(
+            children: <Widget>[
+              Text(title),
+              DropdownButton<String>(
+                value: defaultValue,
+                icon: Icon(Icons.arrow_downward),
+                iconSize: 16,
+                elevation: 16,
+                items: list.map<DropdownMenuItem<String>>((value) {
+                  return DropdownMenuItem<String>(
+                    value: value.name,
+                    child: Text(value.name),
+                  );
+                  }).toList(),  
+                  onChanged: select,
+              ),
+            ],
+          );
+  }
 
 
-  List<String> _listVerseByVerse = [];
-  String _selectedAudioVerse = 'Click to Seelct';
 
   @override
   void initState() {
@@ -80,8 +129,8 @@ class _MainDrawerState extends State<MainDrawer> {
        setState(() {
           _textTypeInfo = formatInfoList.formatTextTypeInfo;
           _translationInfo = formatInfoList.formatTranslationInfo;
-          // _textTypeInfo = formatInfoList.formatAudioAyahInfo;
-          // _textTypeInfo = formatInfoList.formatAudioTranslationInfo;
+          _audioAyahInfo = formatInfoList.formatAudioAyahInfo;
+          _translationAudioInfo = formatInfoList.formatAudioTranslationInfo;
          print('${formatInfoList.formatTextTypeInfo.length}-${formatInfoList.formatTranslationInfo.length}-${formatInfoList.formatAudioAyahInfo.length}-${formatInfoList.formatAudioTranslationInfo.length}');
        });
      });
@@ -111,13 +160,17 @@ class _MainDrawerState extends State<MainDrawer> {
   }
 
     bool _audioEnable = false;
-
     void _audioOptionEnable(bool val){
       setState(() {
       _audioEnable = val;
       });
     }
-    
+    bool _translationEnable = false;
+    void _translationOptionEnable(bool val){
+      setState(() {
+        _translationEnable = val;
+      });
+    }    
 
   @override
   Widget build(BuildContext context) {
@@ -187,28 +240,23 @@ class _MainDrawerState extends State<MainDrawer> {
                           ],
                         ),
                         // TEXT TYPE
-                        Row(children: <Widget>[
-                          Text('TEXT TYPE : ', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Expanded(
-                            child: DropdownButton<String>(
-                            value: _selectedTextType,
-                            icon: Icon(Icons.arrow_downward),
-                            iconSize: 16,
-                            elevation: 12,
-                            items: _textTypeInfo.map<DropdownMenuItem<String>>((FormatInfo value) {
-                              return DropdownMenuItem<String>(
-                                value: value.name,
-                                child: Text(value.name),
-                              );
-                            }).toList(),  
-                            onChanged: (name) {
-                              selectText(name);
-                            },
-                          ),
-                          ),
-                        ],),
+                        randeringDropdown('Text Type: ', _textTypeInfo, _selectedTextType, selectText),
                         // TRANSLATION
-                       
+                        Row(children: <Widget>[
+                        Text('Translation : '), 
+                        Checkbox(
+                          value: _translationEnable, 
+                          onChanged: (val) {
+                            _translationOptionEnable(val);
+                          }),
+                        ],),
+                      _translationEnable 
+                      ? Container(
+                        key: Key('Translation'),
+                        child: 
+                          randeringDropdown('By: ', _translationInfo, _selectedTranslator, selectTranslator) 
+                        ,)
+                      : Container(),
                         // AUDIO 
                        Row(children: <Widget>[
                         Text('Audio : '), 
@@ -217,28 +265,15 @@ class _MainDrawerState extends State<MainDrawer> {
                           onChanged: (val) {
                             _audioOptionEnable(val);
                           }),
-                       ],), 
-                       Row(
-                         children: <Widget>[
-                           Text('versebyverse : '),
-                            DropdownButton<String>(
-                              value: _selectedAudioVerse,
-                              icon: Icon(Icons.arrow_downward),
-                              iconSize: 16,
-                              elevation: 16,
-                              items: _listVerseByVerse.map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value.toString()),
-                                );
-                                }).toList(),  
-                                onChanged: (val) {
-                                  _selectedAudioVerse = val;
-                                },
-                            ),
-                         ],
-                       ),
-
+                        ],),
+                      _audioEnable 
+                      ? Column(
+                        key: Key('Audio'), //_audioKey,
+                        children: <Widget>[
+                          randeringDropdown('Versebyverse: ', _audioAyahInfo, _selectedAudioAyah, selectAudioAyah),
+                          randeringDropdown('Translation: ', _translationAudioInfo, _selectedTranslationAudio, selectTranslationAudio),
+                        ],
+                      ) : Container(),
                        RaisedButton(
                         onPressed: () {
                           // Validate returns true if the form is valid, otherwise false.
