@@ -35,6 +35,8 @@ class FormatInfoList with ChangeNotifier{
           getApiFormatInfo().then((val){
             return;
           });
+        }else{
+          return;
         }
       }
     );    
@@ -44,16 +46,16 @@ class FormatInfoList with ChangeNotifier{
     print('Starting : getDBFormatInfo()');
     try{
       final dbData = await DBHelper.getData(DBHelper.TABLE_FORMAT_INFO);
-
-      dbData.map((item) {  
-
-        String identifier = item['identifier'] ;
-        String language = item['language'] ;
-        String name = item['name'] ;
-        String englishName = item['englishName'] ;
-        String format = item['format'] ;
-        String type = item['type'] ;
-        String direction = item['direction'] ;  
+      print('DB - ${dbData.length}');
+      for(int i = 0 ; i < dbData.length; i++){
+               
+        String identifier = dbData[i]['identifier'] ;
+        String language = dbData[i]['language'] ;
+        String name = dbData[i]['name'] ;
+        String englishName = dbData[i]['englishName'] ;
+        String format = dbData[i]['format'] ;
+        String type = dbData[i]['type'] ;
+        String direction = dbData[i]['direction'] ;  
         //foramt "text" / "audio"
         // type "quran", "translation", "tafsir" / "translation" , "versebyverse"
         if(format == "text"){
@@ -97,13 +99,13 @@ class FormatInfoList with ChangeNotifier{
                 direction: direction,
                 ));
           }
-      });
-      notifyListeners();
-      
+      }
+    
     }catch (error){
       print('Error : getDBFormatInfo()' + error.toString());
       return;
     }
+    notifyListeners();
     print('Done : getDBFormatInfo() ${_formatTextTypeInfo.length}-${_formatTranslationInfo.length}-${_formatAudioAyahInfo.length}-${_formatAudioTranslationInfo.length} ');
     return;
   }

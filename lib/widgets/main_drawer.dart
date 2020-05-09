@@ -5,6 +5,7 @@ import '../models/surah_info.dart';
 import '../models/format_info.dart';
 import 'package:provider/provider.dart';
 import '../screens/ayah_info_list_screen.dart';
+import '../models/search_arguments.dart';
 
 class MainDrawer extends StatefulWidget {
 
@@ -143,7 +144,6 @@ class _MainDrawerState extends State<MainDrawer> {
       if(name != null){
        int len = _surahInfoList.length;
         for(int i = 0; i < len ; i++){
-          print(_surahInfoList[i].name);
           if (_surahInfoList[i].englishName == name){
             setState(() {
             _selectedSurah = name;
@@ -154,7 +154,7 @@ class _MainDrawerState extends State<MainDrawer> {
       }else if(number != null){
         setState(() {
           _selectedSurahno = number;
-          _selectedSurah = _surahInfoList[number].englishName;
+          _selectedSurah = _surahInfoList[number - 1].englishName;
         });
       }
   }
@@ -243,20 +243,20 @@ class _MainDrawerState extends State<MainDrawer> {
                         randeringDropdown('Text Type: ', _textTypeInfo, _selectedTextType, selectText),
                         // TRANSLATION
                         Row(children: <Widget>[
-                        Text('Translation : '), 
-                        Checkbox(
-                          value: _translationEnable, 
-                          onChanged: (val) {
-                            _translationOptionEnable(val);
-                          }),
-                        ],),
-                      _translationEnable 
-                      ? Container(
-                        key: Key('Translation'),
-                        child: 
-                          randeringDropdown('By: ', _translationInfo, _selectedTranslator, selectTranslator) 
-                        ,)
-                      : Container(),
+                          Text('Translation : '), 
+                          Checkbox(
+                            value: _translationEnable, 
+                            onChanged: (val) {
+                              _translationOptionEnable(val);
+                            }),
+                          ],),
+                        _translationEnable 
+                        ? Container(
+                          key: Key('Translation'),
+                          child: 
+                            randeringDropdown('By: ', _translationInfo, _selectedTranslator, selectTranslator) 
+                          ,)
+                        : Container(),
                         // AUDIO 
                        Row(children: <Widget>[
                         Text('Audio : '), 
@@ -272,9 +272,9 @@ class _MainDrawerState extends State<MainDrawer> {
                         children: <Widget>[
                           randeringDropdown('Versebyverse: ', _audioAyahInfo, _selectedAudioAyah, selectAudioAyah),
                           randeringDropdown('Translation: ', _translationAudioInfo, _selectedTranslationAudio, selectTranslationAudio),
-                        ],
-                      ) : Container(),
-                       RaisedButton(
+                        ],)
+                      : Container(),
+                      RaisedButton(
                         onPressed: () {
                           // Validate returns true if the form is valid, otherwise false.
                           if (_formKey.currentState.validate()) {
@@ -282,7 +282,25 @@ class _MainDrawerState extends State<MainDrawer> {
                                 .of(context)
                                 .showSnackBar(SnackBar(content: Text('Processing Data')));
                           }
-                          Navigator.of(context).pushNamed(AyahInfoListScreen.routeName);
+
+                          List<String> _identifiyers = List<String>();
+                          _identifiyers.add(_selectedTextIdentifier);
+                          if(_translationEnable) _identifiyers.add(_selectedtranslationIdentifier);
+                          if(_audioEnable) _identifiyers.add(_selectedAudioAyahIdentifier);
+
+                          print(_selectedSurahno.toString());
+                          print(_surahInfoList[_selectedSurahno - 1].numberOfAyahs);
+                          for(int i =0; i<_identifiyers.length; i++){
+                            print(_identifiyers[i]);
+                          }
+                          
+                          Navigator.of(context)
+                          .pushNamed(
+                            AyahInfoListScreen.routeName, 
+                            arguments: SearchArguments(
+                              serialNoOfSurah: _selectedSurahno, 
+                              totalNoAyahs: _surahInfoList[_selectedSurahno - 1].numberOfAyahs, 
+                              identifiyers: _identifiyers));
                         },
                         child: Text('Submit'),
                       ),

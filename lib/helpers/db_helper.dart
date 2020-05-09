@@ -47,7 +47,8 @@ class DBHelper {
   static Future<void> insert(String table, Map<String, Object>data) async {
     print("inserting");
     final db = await DBHelper.database();
-    db.insert(table, data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
+    Future<int> line = db.insert(table, data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
+    line.then((onValue) => print('line - ${onValue.toString()}'));
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {
@@ -61,9 +62,7 @@ class DBHelper {
     print('getAyah db data');
     print('${numberOfSurah.toString()}');
     print(numberOfSurah.toString());
-    //return db.query(table);
     return db.query(table, where: '"numberOfSurah" = ? and "identifier" = ?', whereArgs: [ '${numberOfSurah.toString()}' , '$identifier']);
-    //return db.query(table, where: 'numberOfSurah = ? and identifier = ?', whereArgs: [ 114 , 'en.asad']);
   }
     
 

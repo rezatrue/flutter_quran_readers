@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../providers/ayah_info_list.dart';
 import 'package:provider/provider.dart';
+import '../models/search_arguments.dart';
 
 class AyahInfoListScreen extends StatelessWidget {
 
@@ -10,8 +11,10 @@ static const String routeName = '/ayah-info-list-screen';
   Widget build(BuildContext context) {
     var ayahInfoList = Provider.of<AyahInfoList>(context, listen: false);
 
-    ayahInfoList.getAyahInfo(114, 6, ['quran-uthmani' ,'en.asad' ,'ar.alafasy']).then((_){  
+    SearchArguments args = ModalRoute.of(context).settings.arguments;
 
+    //ayahInfoList.getAyahInfo(114, 6, ['quran-uthmani' ,'en.asad' ,'ar.alafasy']).then((_){  
+    ayahInfoList.getAyahInfo(args.serialNoOfSurah, args.totalNoAyahs, [...args.identifiyers]).then((_){
       print('ayah - data retrived - ${ayahInfoList.ayahInfo.length}');
       if(ayahInfoList.ayahInfo.length < 1) return;
       for(int i= 0; i <ayahInfoList.ayahInfo.length; i++){
