@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           //home: MyHomePage(title: appName),
-          initialRoute: SurahInfoListScreen.routeName,
+          //initialRoute: SurahInfoListScreen.routeName,
           routes: {
             //'/': (ctx) => MyHomePage(title: appName),
             '/' : (ctx) => SurahInfoListScreen(title: appName,),

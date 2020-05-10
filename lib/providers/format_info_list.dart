@@ -30,9 +30,10 @@ class FormatInfoList with ChangeNotifier{
 
   Future<void> getFormatInfo() async{
 
-    await getDBFormatInfo().then( (val){
-        if(_formatTextTypeInfo.length < 1){
-          getApiFormatInfo().then((val){
+    await getDBFormatInfo().then( (_){
+        print(' length - ${formatTextTypeInfo.length}');
+        if(formatTextTypeInfo.length < 1){
+          getApiFormatInfo().then((_){
             return;
           });
         }else{
@@ -199,13 +200,13 @@ class FormatInfoList with ChangeNotifier{
           }
         }
         }catch (error){
-          print('error : '+ error.toString()+' : ' + _formatTextTypeInfo.length.toString());
+          print('error : '+ error.toString()+' : ' + formatTextTypeInfo.length.toString());
           return;
         }
 
     }
       notifyListeners();      
-      print('End : get API data' + _formatTextTypeInfo.length.toString());
+      print('End : get API data' + formatTextTypeInfo.length.toString());
       return;
 
     }

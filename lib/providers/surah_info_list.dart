@@ -15,34 +15,23 @@ class SurahInfoList with ChangeNotifier{
   Future<void> getSurahInfo() async{
 
     await getDBSurahInfo().then( (val){
-        if(_surahsInfo.length != 114){
+        if(surahsInfo.length != 114){
           getApiSurahInfo().then((val){
-            //addSurahInfo();
+            return;
           });
+        }else {
+          return;
         }
       }
     );    
-  }
-  // not used 
-  void addSurahInfo() async{
-    _surahsInfo.map((surahsInfo) => {
-      DBHelper.insert(DBHelper.TABLE_SURAH_INFO, {
-          'name': surahsInfo.name,
-          'number': surahsInfo.number,
-          'numberOfAyahs': surahsInfo.numberOfAyahs,
-          'englishName': surahsInfo.englishName,
-          'revelationType': surahsInfo.revelationType,
-          'englishNameTranslation': surahsInfo.englishNameTranslation,}
-        ),
-    });
   }
 
   Future<void> getDBSurahInfo() async{
     print('Starting : getDBSurahInfo()');
     try{
       final dbData = await DBHelper.getData(DBHelper.TABLE_SURAH_INFO);
-
       _surahsInfo = dbData.map((item) => SurahInfo(
+        
         name: item['name'],
         number: item['number'],
         numberOfAyahs: item['numberOfAyahs'],
@@ -51,12 +40,12 @@ class SurahInfoList with ChangeNotifier{
         englishNameTranslation: item['englishNameTranslation'],
         )
         ).toList();    
-      notifyListeners();
       print('-: getDBSurahInfo()' + _surahsInfo.length.toString());
     }catch (error){
       print('Error : getDBSurahInfo()' + error.toString());
       return;
     }
+    notifyListeners();
     print('Done : getDBSurahInfo()');
     return;
   }
@@ -93,7 +82,7 @@ class SurahInfoList with ChangeNotifier{
           ));
       }
      
-      notifyListeners();
+      
         }else{
             print('-------------error----------------');
         }
@@ -102,6 +91,7 @@ class SurahInfoList with ChangeNotifier{
         print('error : '+ error.toString()+' : ' + _surahsInfo.length.toString());
         return;
       }
+      notifyListeners();
       print('End : get API data' + _surahsInfo.length.toString());
       return;
     }

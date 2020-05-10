@@ -109,33 +109,25 @@ class _MainDrawerState extends State<MainDrawer> {
           );
   }
 
-
-
   @override
   void initState() {
     print('serialNumber  create ${widget.serialNumber.toString()}');
     _selectedSurahno = widget.serialNumber != null ? widget.serialNumber : 1;
-
-    var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
-    surahInfoList.getSurahInfo().then((_){
-      setState(() {
-      _surahInfoList = surahInfoList.surahsInfo;
-      _selectedSurah = widget.serialNumber != null ? _surahInfoList[_selectedSurahno-1].englishName : 'Fatiha';
-      });
-      print('data retrived' + surahInfoList.surahsInfo.length.toString());
-    });
-
-     var formatInfoList = Provider.of<FormatInfoList>(context, listen: false);
-       formatInfoList.getFormatInfo().then((_){
-       setState(() {
-          _textTypeInfo = formatInfoList.formatTextTypeInfo;
-          _translationInfo = formatInfoList.formatTranslationInfo;
-          _audioAyahInfo = formatInfoList.formatAudioAyahInfo;
-          _translationAudioInfo = formatInfoList.formatAudioTranslationInfo;
-         print('${formatInfoList.formatTextTypeInfo.length}-${formatInfoList.formatTranslationInfo.length}-${formatInfoList.formatAudioAyahInfo.length}-${formatInfoList.formatAudioTranslationInfo.length}');
-       });
-     });
     
+    var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
+    _surahInfoList = surahInfoList.surahsInfo;
+    _selectedSurah = widget.serialNumber != null ? _surahInfoList[_selectedSurahno-1].englishName : 'Fatiha';
+     
+    print('data retrived' + surahInfoList.surahsInfo.length.toString());
+     
+    
+    var formatInfoList = Provider.of<FormatInfoList>(context, listen: false);
+    _textTypeInfo = formatInfoList.formatTextTypeInfo;
+    _translationInfo = formatInfoList.formatTranslationInfo;
+    _audioAyahInfo = formatInfoList.formatAudioAyahInfo;
+    _translationAudioInfo = formatInfoList.formatAudioTranslationInfo;
+    print('${formatInfoList.formatTextTypeInfo.length}-${formatInfoList.formatTranslationInfo.length}-${formatInfoList.formatAudioAyahInfo.length}-${formatInfoList.formatAudioTranslationInfo.length}');
+      
     super.initState();
   }
 

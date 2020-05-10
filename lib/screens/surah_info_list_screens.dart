@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/main_drawer.dart';
 import 'package:provider/provider.dart';
 import '../providers/surah_info_list.dart';
+import '../providers/format_info_list.dart';
 
 class SurahInfoListScreen extends StatefulWidget {
   SurahInfoListScreen({Key key, this.title}) : super(key: key);
@@ -14,14 +15,17 @@ class SurahInfoListScreen extends StatefulWidget {
 
 class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
-
+  var surahInfoList;
 
   @override
   void initState() {
-    var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
+    surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
     surahInfoList.getSurahInfo().then((_){   
-      print('data retrived' + surahInfoList.surahsInfo.length.toString());
+      print('data retrived init ' + surahInfoList.surahsInfo.length.toString());
     });
+
+    Provider.of<FormatInfoList>(context, listen: false).getFormatInfo();
+    
     super.initState();
   }
 
@@ -36,18 +40,9 @@ class _SurahInfoListScreenState extends State<SurahInfoListScreen> {
     });
   }
 
-
-  @override
-  void didChangeDependencies() {
-    var surahInfoList = Provider.of<SurahInfoList>(context, listen: false);
-    surahInfoList.getSurahInfo().then((_){   
-      print('data retrived' + surahInfoList.surahsInfo.length.toString());
-    });
-    super.didChangeDependencies();
-  }
-
  @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
